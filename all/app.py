@@ -10,11 +10,41 @@ class Friends(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
     # Create a function to return a string when we add something
     def __repr__(self):
         return '<Name %r>' % self.id
+
+
+
+
 subscribers = []
+
+@app.route('/delete/<int:id>')
+def delete(id):
+    friend_to_update = Friends.query.get_or_404(id)
+
+    try:
+        db.session.delete(friend_to_delete)
+        db.session.commit()
+        return redirect('/friends')
+    except:
+        return "There was a problem deleting that friend"
+@app.route('/update/<int:id>', methods=['POST', 'GET'])
+def update(id):
+    friend_to_delete = Friends.query.get_or_404(id)
+    if request.method == "POST":
+        friend_to_update.name = request.form['name']
+        try:
+            db.session.commit()
+            return redirect('/friends')
+        except:
+            return "There was a problem updating that friend..."
+    else:
+        return render_template('update.html', friend_to_update=friend_to_update )
 @app.route('/friends' , methods=['POST', 'GET'])
+
+
 def friends():
     title = "Qeydiyyatdan kecenlerin siyahisi"
     if request.method == "POST":
